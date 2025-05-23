@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIST 800-171 Rev. 3 Controls Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>NIST 800-171 Rev. 3 Controls Tracker</h1>
+            <p class="subtitle">Protecting Controlled Unclassified Information in Nonfederal Systems and Organizations</p>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="total-controls">97</span>
+                    <span class="stat-label">Total Controls</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="completed-controls">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="progress-percentage">0%</span>
+                    <span class="stat-label">Progress</span>
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <nav class="controls-nav">
+        <div class="container">
+            <div class="nav-controls">
+                <input type="text" id="search-input" placeholder="Search controls..." />
+                <select id="family-filter">
+                    <option value="">All Families</option>
+                    <option value="AC">Access Control (AC)</option>
+                    <option value="AT">Awareness and Training (AT)</option>
+                    <option value="AU">Audit and Accountability (AU)</option>
+                    <option value="CA">Assessment, Authorization, and Monitoring (CA)</option>
+                    <option value="CM">Configuration Management (CM)</option>
+                    <option value="IA">Identification and Authentication (IA)</option>
+                    <option value="IR">Incident Response (IR)</option>
+                    <option value="MA">Maintenance (MA)</option>
+                    <option value="MP">Media Protection (MP)</option>
+                    <option value="PE">Physical Protection (PE)</option>
+                    <option value="PS">Personnel Security (PS)</option>
+                    <option value="RA">Risk Assessment (RA)</option>
+                    <option value="CA">Security Assessment and Monitoring (CA)</option>
+                    <option value="SC">System and Communications Protection (SC)</option>
+                    <option value="SI">System and Information Integrity (SI)</option>
+                    <option value="PL">Planning (PL)</option>
+                    <option value="SA">System and Services Acquisition (SA)</option>
+                    <option value="SR">Supply Chain Risk Management (SR)</option>
+                </select>
+                <select id="status-filter">
+                    <option value="">All Statuses</option>
+                    <option value="not-started">Not Started</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <button id="export-btn">Export Progress</button>
+                <button id="reset-btn">Reset All</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="info-section">
+            <div class="info-card">
+                <h3>About NIST 800-171 Rev. 3</h3>
+                <p>Published May 14, 2024, this revision contains 97 security requirements across 17 families to protect Controlled Unclassified Information (CUI) in nonfederal systems and organizations.</p>
+                <p><strong>Key Changes from Rev. 2:</strong> Reduced from 110 to 97 controls, added 3 new control families (Planning, System and Services Acquisition, Supply Chain Risk Management), and introduced organization-defined parameters for flexibility.</p>
+                <a href="https://doi.org/10.6028/NIST.SP.800-171r3" target="_blank" class="official-link">📖 View Official Publication</a>
+            </div>
+        </div>
+
+        <div class="controls-container" id="controls-container">
+            <!-- Controls will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 NIST 800-171 Rev. 3 Controls Tracker. This is an unofficial tool for tracking compliance progress.</p>
+            <p>Official Publication: <a href="https://doi.org/10.6028/NIST.SP.800-171r3" target="_blank">NIST SP 800-171 Rev. 3</a></p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
