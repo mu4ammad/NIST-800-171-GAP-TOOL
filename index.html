@@ -415,6 +415,48 @@
             line-height: 1.5;
         }
 
+        .control-notes {
+            background: var(--card-background);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .control-notes h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            resize: vertical;
+            transition: border-color 0.2s ease;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .notes-hint {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-style: italic;
+        }
+
         .requirement-text {
             font-size: 0.875rem;
             line-height: 1.6;
@@ -562,6 +604,36 @@
             .requirement-text {
                 font-size: 0.8rem;
             }
+
+            .control-notes {
+                padding: 0.75rem;
+            }
+
+            .notes-textarea {
+                min-height: 60px;
+            }
+
+            .export-modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .export-modal-header {
+                padding: 1rem;
+            }
+
+            .export-modal-body {
+                padding: 1rem;
+            }
+
+            .export-formats {
+                gap: 0.5rem;
+            }
+
+            .export-format-btn {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -611,6 +683,141 @@
         .no-results h3 {
             margin-bottom: 1rem;
             color: var(--text-primary);
+        }
+
+        /* Export Modal Styles */
+        .export-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .export-modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        .export-modal-content {
+            position: relative;
+            z-index: 1001;
+            background: var(--card-background);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-large);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .export-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .export-modal-header h3 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--hover-color);
+            color: var(--text-primary);
+        }
+
+        .export-modal-body {
+            padding: 1.5rem 2rem 2rem 2rem;
+        }
+
+        .export-option {
+            margin-bottom: 1.5rem;
+        }
+
+        .export-option label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        #export-filename {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease;
+        }
+
+        #export-filename:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .export-formats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .export-format-btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--card-background);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .export-format-btn:hover {
+            border-color: var(--secondary-color);
+            background: var(--hover-color);
+            transform: translateY(-1px);
+        }
+
+        .export-preview {
+            background: var(--hover-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .export-preview small {
+            color: var(--text-secondary);
+            line-height: 1.4;
         }
 
         /* Print Styles */
@@ -738,21 +945,24 @@
                         title: "Account Management",
                         description: "Manage system accounts including creation, enabling, modification, disabling, and removal.",
                         requirement: "a. Define the types of system accounts allowed and prohibited.\nb. Create, enable, modify, disable, and remove system accounts in accordance with policy, procedures, prerequisites, and criteria.\nc. Specify: 1. Authorized users of the system, 2. Group and role membership, and 3. Access authorizations (i.e., privileges) for each account.\nd. Authorize access to the system based on: 1. A valid access authorization and 2. Intended system usage.\ne. Monitor the use of system accounts.\nf. Disable system accounts when: 1. The accounts have expired, 2. The accounts have been inactive for [Assignment: organization-defined time period], 3. The accounts are no longer associated with a user or individual, 4. The accounts are in violation of organizational policy, or 5. Significant risks associated with individuals are discovered.\ng. Notify account managers and designated personnel or roles within: 1. [Assignment: organization-defined time period] when accounts are no longer required. 2. [Assignment: organization-defined time period] when users are terminated or transferred. 3. [Assignment: organization-defined time period] when system usage or the need-to-know changes for an individual.\nh. Require that users log out of the system after [Assignment: organization-defined time period] of expected inactivity or when [Assignment: organization-defined circumstances].",
-                        status: "not-started"
+                        status: "not-started",
+                        notes: ""
                     },
                     {
                         id: "03.01.02",
                         title: "Access Enforcement",
                         description: "Enforce approved authorizations for logical access to CUI and system resources in accordance with applicable access control policies.",
                         requirement: "Enforce approved authorizations for logical access to CUI and system resources in accordance with applicable access control policies.",
-                        status: "not-started"
+                        status: "not-started",
+                        notes: ""
                     },
                     {
                         id: "03.01.03",
                         title: "Information Flow Enforcement",
                         description: "Enforce approved authorizations for controlling the flow of CUI within the system and between connected systems.",
                         requirement: "Enforce approved authorizations for controlling the flow of CUI within the system and between connected systems.",
-                        status: "not-started"
+                        status: "not-started",
+                        notes: ""
                     },
                     {
                         id: "03.01.04",
@@ -1524,10 +1734,22 @@
             }
 
             init() {
+                // Initialize notes field for all controls if not present
+                this.initializeNotesField();
                 this.loadProgress();
                 this.bindEvents();
                 this.renderControls();
                 this.updateStats();
+            }
+
+            initializeNotesField() {
+                Object.keys(this.controlsData).forEach(familyKey => {
+                    this.controlsData[familyKey].controls.forEach(control => {
+                        if (!control.hasOwnProperty('notes')) {
+                            control.notes = "";
+                        }
+                    });
+                });
             }
 
             bindEvents() {
@@ -1551,7 +1773,7 @@
 
                 // Export progress
                 document.getElementById('export-btn').addEventListener('click', () => {
-                    this.exportProgress();
+                    this.showExportModal();
                 });
 
                 // Reset progress
@@ -1567,11 +1789,12 @@
                 if (saved) {
                     try {
                         const progress = JSON.parse(saved);
-                        // Update control statuses from saved progress
+                        // Update control statuses and notes from saved progress
                         Object.keys(this.controlsData).forEach(familyKey => {
                             this.controlsData[familyKey].controls.forEach(control => {
                                 if (progress[control.id]) {
-                                    control.status = progress[control.id];
+                                    control.status = progress[control.id].status || control.status;
+                                    control.notes = progress[control.id].notes || "";
                                 }
                             });
                         });
@@ -1585,7 +1808,10 @@
                 const progress = {};
                 Object.keys(this.controlsData).forEach(familyKey => {
                     this.controlsData[familyKey].controls.forEach(control => {
-                        progress[control.id] = control.status;
+                        progress[control.id] = {
+                            status: control.status,
+                            notes: control.notes || ""
+                        };
                     });
                 });
                 localStorage.setItem('nist-800-171-progress', JSON.stringify(progress));
@@ -1602,6 +1828,16 @@
                 this.updateStats();
                 this.updateProgressBar();
                 this.renderControls(); // Re-render to update the visual status
+            }
+
+            updateControlNotes(controlId, notes) {
+                Object.keys(this.controlsData).forEach(familyKey => {
+                    const control = this.controlsData[familyKey].controls.find(c => c.id === controlId);
+                    if (control) {
+                        control.notes = notes;
+                    }
+                });
+                this.saveProgress();
             }
 
             updateStats() {
@@ -1896,6 +2132,16 @@
                                 <h4>Requirement:</h4>
                                 <pre>${control.requirement}</pre>
                             </div>
+                            <div class="control-notes">
+                                <h4>Implementation Notes:</h4>
+                                <textarea 
+                                    class="notes-textarea" 
+                                    placeholder="Add your implementation notes, difficulty assessment, tools used, etc..."
+                                    onchange="app.updateControlNotes('${control.id}', this.value)"
+                                    onblur="app.updateControlNotes('${control.id}', this.value)"
+                                >${control.notes || ''}</textarea>
+                                <small class="notes-hint">💡 Track implementation details, difficulty level, tools used, or any other relevant notes</small>
+                            </div>
                             <div class="control-links">
                                 <a href="${officialLink}" target="_blank" class="control-link">
                                     📖 View in Official Publication
@@ -1926,25 +2172,71 @@
                 button.textContent = isExpanded ? '+' : '−';
             }
 
-            exportProgress() {
+            showExportModal() {
+                const modal = document.createElement('div');
+                modal.className = 'export-modal';
+                modal.innerHTML = `
+                    <div class="export-modal-content">
+                        <div class="export-modal-header">
+                            <h3>Export Progress Report</h3>
+                            <button class="modal-close" onclick="this.closest('.export-modal').remove()">×</button>
+                        </div>
+                        <div class="export-modal-body">
+                            <div class="export-option">
+                                <label for="export-filename">Custom Filename:</label>
+                                <input type="text" id="export-filename" value="nist-800-171-progress-${new Date().toISOString().split('T')[0]}" placeholder="Enter filename (without extension)">
+                            </div>
+                            <div class="export-option">
+                                <label>Export Format:</label>
+                                <div class="export-formats">
+                                    <button class="export-format-btn" onclick="app.exportProgress('json', document.getElementById('export-filename').value)">
+                                        📄 JSON (Complete Data)
+                                    </button>
+                                    <button class="export-format-btn" onclick="app.exportProgress('csv', document.getElementById('export-filename').value)">
+                                        📊 CSV (Spreadsheet)
+                                    </button>
+                                    <button class="export-format-btn" onclick="app.exportProgress('txt', document.getElementById('export-filename').value)">
+                                        📝 Text Report
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="export-preview">
+                                <small>
+                                    <strong>What's included:</strong> All control statuses, implementation notes, 
+                                    completion statistics, and export timestamp.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="export-modal-backdrop" onclick="this.closest('.export-modal').remove()"></div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            exportProgress(format = 'json', filename = '') {
                 const progress = {};
                 let totalControls = 0;
                 let completedControls = 0;
                 let inProgressControls = 0;
+                let controlsWithNotes = 0;
 
                 Object.keys(this.controlsData).forEach(familyKey => {
                     const family = this.controlsData[familyKey];
                     progress[familyKey] = {
                         name: family.name,
+                        description: family.description,
                         controls: family.controls.map(control => {
                             totalControls++;
                             if (control.status === 'completed') completedControls++;
                             if (control.status === 'in-progress') inProgressControls++;
+                            if (control.notes && control.notes.trim()) controlsWithNotes++;
                             
                             return {
                                 id: control.id,
                                 title: control.title,
-                                status: control.status
+                                description: control.description,
+                                status: control.status,
+                                notes: control.notes || ""
                             };
                         })
                     };
@@ -1952,21 +2244,85 @@
 
                 const exportData = {
                     exportDate: new Date().toISOString(),
+                    organizationName: "Organization Name", // Could be made configurable
                     summary: {
                         totalControls,
                         completedControls,
                         inProgressControls,
                         notStartedControls: totalControls - completedControls - inProgressControls,
-                        completionPercentage: Math.round((completedControls / totalControls) * 100)
+                        completionPercentage: Math.round((completedControls / totalControls) * 100),
+                        controlsWithNotes
                     },
                     families: progress
                 };
 
-                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const cleanFilename = filename.trim() || `nist-800-171-progress-${new Date().toISOString().split('T')[0]}`;
+
+                if (format === 'json') {
+                    this.downloadFile(JSON.stringify(exportData, null, 2), `${cleanFilename}.json`, 'application/json');
+                } else if (format === 'csv') {
+                    this.exportAsCSV(exportData, cleanFilename);
+                } else if (format === 'txt') {
+                    this.exportAsText(exportData, cleanFilename);
+                }
+
+                // Close modal
+                const modal = document.querySelector('.export-modal');
+                if (modal) modal.remove();
+            }
+
+            exportAsCSV(data, filename) {
+                let csv = 'Control ID,Title,Family,Status,Notes,Description\n';
+                
+                Object.keys(data.families).forEach(familyKey => {
+                    const family = data.families[familyKey];
+                    family.controls.forEach(control => {
+                        const notes = (control.notes || '').replace(/"/g, '""');
+                        const description = (control.description || '').replace(/"/g, '""');
+                        csv += `"${control.id}","${control.title}","${family.name}","${control.status}","${notes}","${description}"\n`;
+                    });
+                });
+
+                this.downloadFile(csv, `${filename}.csv`, 'text/csv');
+            }
+
+            exportAsText(data, filename) {
+                let text = `NIST 800-171 Rev. 3 Compliance Progress Report\n`;
+                text += `Generated: ${new Date(data.exportDate).toLocaleString()}\n`;
+                text += `Organization: ${data.organizationName}\n\n`;
+                
+                text += `SUMMARY\n`;
+                text += `========\n`;
+                text += `Total Controls: ${data.summary.totalControls}\n`;
+                text += `Completed: ${data.summary.completedControls} (${data.summary.completionPercentage}%)\n`;
+                text += `In Progress: ${data.summary.inProgressControls}\n`;
+                text += `Not Started: ${data.summary.notStartedControls}\n`;
+                text += `Controls with Notes: ${data.summary.controlsWithNotes}\n\n`;
+
+                Object.keys(data.families).forEach(familyKey => {
+                    const family = data.families[familyKey];
+                    text += `${familyKey} - ${family.name}\n`;
+                    text += `${'='.repeat(family.name.length + familyKey.length + 3)}\n`;
+                    
+                    family.controls.forEach(control => {
+                        text += `\n${control.id} - ${control.title}\n`;
+                        text += `Status: ${control.status.toUpperCase()}\n`;
+                        if (control.notes && control.notes.trim()) {
+                            text += `Notes: ${control.notes}\n`;
+                        }
+                    });
+                    text += `\n`;
+                });
+
+                this.downloadFile(text, `${filename}.txt`, 'text/plain');
+            }
+
+            downloadFile(content, filename, mimeType) {
+                const blob = new Blob([content], { type: mimeType });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `nist-800-171-progress-${new Date().toISOString().split('T')[0]}.json`;
+                a.download = filename;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -1977,6 +2333,7 @@
                 Object.keys(this.controlsData).forEach(familyKey => {
                     this.controlsData[familyKey].controls.forEach(control => {
                         control.status = 'not-started';
+                        control.notes = '';
                     });
                 });
                 localStorage.removeItem('nist-800-171-progress');
