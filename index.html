@@ -13,6 +13,7 @@
             --accent-color: #10b981;
             --danger-color: #ef4444;
             --warning-color: #f59e0b;
+            --not-applicable-color: #9ca3af;
             --background-color: #f8fafc;
             --card-background: #ffffff;
             --text-primary: #1f2937;
@@ -69,7 +70,7 @@
         .header-stats {
             display: flex;
             justify-content: center;
-            gap: 3rem;
+            gap: 2rem;
             flex-wrap: wrap;
         }
 
@@ -276,6 +277,29 @@
             background: var(--hover-color);
         }
 
+        /* Not applicable control styling */
+        .control-item.not-applicable {
+            opacity: 0.6;
+            background: #f9fafb;
+        }
+
+        .control-item.not-applicable .control-header {
+            color: var(--not-applicable-color);
+        }
+
+        .control-item.not-applicable .control-id {
+            color: var(--not-applicable-color) !important;
+        }
+
+        .control-item.not-applicable .control-name {
+            color: var(--not-applicable-color);
+            text-decoration: line-through;
+        }
+
+        .control-item.not-applicable:hover {
+            background: #f3f4f6;
+        }
+
         .control-header {
             padding: 1.5rem 2rem;
             cursor: pointer;
@@ -363,6 +387,18 @@
         .status-completed:hover {
             background: linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 100%);
             border-color: #059669;
+            transform: translateY(-1px);
+        }
+
+        .status-not-applicable {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-color: #9ca3af;
+            color: #4b5563;
+        }
+
+        .status-not-applicable:hover {
+            background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+            border-color: #6b7280;
             transform: translateY(-1px);
         }
 
@@ -855,11 +891,15 @@
             <div class="header-stats">
                 <div class="stat-item">
                     <span class="stat-number" id="total-controls">97</span>
-                    <span class="stat-label">Total Controls</span>
+                    <span class="stat-label">Total Applicable Controls</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" id="completed-controls">0</span>
                     <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="not-applicable-controls">0</span>
+                    <span class="stat-label">Not Applicable</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" id="progress-percentage">0%</span>
@@ -899,6 +939,7 @@
                     <option value="not-started">Not Started</option>
                     <option value="in-progress">In Progress</option>
                     <option value="completed">Completed</option>
+                    <option value="not-applicable">Not Applicable</option>
                 </select>
                 <button id="export-btn">Export Progress</button>
                 <button id="reset-btn">Reset All</button>
@@ -915,6 +956,7 @@
                 <h3>About NIST 800-171 Rev. 3</h3>
                 <p>Published May 14, 2024, this revision contains 97 security requirements across 17 families to protect Controlled Unclassified Information (CUI) in nonfederal systems and organizations.</p>
                 <p><strong>Key Changes from Rev. 2:</strong> Reduced from 110 to 97 controls, added 3 new control families (Planning, System and Services Acquisition, Supply Chain Risk Management), and introduced organization-defined parameters for flexibility.</p>
+                <p><strong>Not Applicable Controls:</strong> Mark controls as "Not Applicable" if they don't apply to your environment. These are excluded from your compliance percentage calculation.</p>
                 <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/800-171r3/NIST.SP.800-171r3.html" target="_blank" class="official-link">📖 View Official Publication</a>
             </div>
         </div>
@@ -1843,37 +1885,48 @@
             updateStats() {
                 let totalControls = 0;
                 let completedControls = 0;
+                let notApplicableControls = 0;
+                let applicableControls = 0;
 
                 Object.keys(this.controlsData).forEach(familyKey => {
                     this.controlsData[familyKey].controls.forEach(control => {
                         totalControls++;
                         if (control.status === 'completed') {
                             completedControls++;
+                            applicableControls++;
+                        } else if (control.status === 'not-applicable') {
+                            notApplicableControls++;
+                        } else {
+                            applicableControls++;
                         }
                     });
                 });
 
-                const progressPercentage = totalControls > 0 ? Math.round((completedControls / totalControls) * 100) : 0;
+                // Progress percentage is based only on applicable controls
+                const progressPercentage = applicableControls > 0 ? Math.round((completedControls / applicableControls) * 100) : 0;
 
-                document.getElementById('total-controls').textContent = totalControls;
+                document.getElementById('total-controls').textContent = applicableControls;
                 document.getElementById('completed-controls').textContent = completedControls;
+                document.getElementById('not-applicable-controls').textContent = notApplicableControls;
                 document.getElementById('progress-percentage').textContent = `${progressPercentage}%`;
             }
 
             updateProgressBar() {
-                let totalControls = 0;
+                let applicableControls = 0;
                 let completedControls = 0;
 
                 Object.keys(this.controlsData).forEach(familyKey => {
                     this.controlsData[familyKey].controls.forEach(control => {
-                        totalControls++;
-                        if (control.status === 'completed') {
-                            completedControls++;
+                        if (control.status !== 'not-applicable') {
+                            applicableControls++;
+                            if (control.status === 'completed') {
+                                completedControls++;
+                            }
                         }
                     });
                 });
 
-                const progressPercentage = totalControls > 0 ? (completedControls / totalControls) * 100 : 0;
+                const progressPercentage = applicableControls > 0 ? (completedControls / applicableControls) * 100 : 0;
                 document.getElementById('progress-fill').style.width = `${progressPercentage}%`;
             }
 
@@ -1928,13 +1981,19 @@
                     });
 
                     if (filteredControls.length > 0) {
+                        // Calculate applicable controls for this family (excluding N/A)
+                        const applicableControls = family.controls.filter(c => c.status !== 'not-applicable').length;
+                        const completedControls = family.controls.filter(c => c.status === 'completed').length;
+
                         filtered.push({
                             key: familyKey,
                             name: family.name,
                             description: family.description,
                             controls: filteredControls,
                             totalControls: family.controls.length,
-                            completedControls: family.controls.filter(c => c.status === 'completed').length
+                            applicableControls: applicableControls,
+                            completedControls: completedControls,
+                            notApplicableControls: family.controls.filter(c => c.status === 'not-applicable').length
                         });
                     }
                 });
@@ -1945,6 +2004,8 @@
             createFamilyElement(familyData) {
                 const familyDiv = document.createElement('div');
                 familyDiv.className = 'family-group';
+                const progressPercent = familyData.applicableControls > 0 ? Math.round((familyData.completedControls / familyData.applicableControls) * 100) : 0;
+                
                 familyDiv.innerHTML = `
                     <div class="family-header" onclick="this.parentElement.querySelector('.family-controls').classList.toggle('hidden')">
                         <div>
@@ -1952,8 +2013,9 @@
                             <p>${familyData.description}</p>
                         </div>
                         <div class="family-stats">
-                            <span>${familyData.completedControls}/${familyData.totalControls} Complete</span>
-                            <span>${Math.round((familyData.completedControls / familyData.totalControls) * 100)}%</span>
+                            <span>${familyData.completedControls}/${familyData.applicableControls} Complete</span>
+                            <span>${familyData.notApplicableControls} N/A</span>
+                            <span>${progressPercent}%</span>
                         </div>
                     </div>
                     <div class="family-controls">
@@ -2108,8 +2170,10 @@
                     `https://nvlpubs.nist.gov/nistpubs/SpecialPublications/800-171r3/NIST.SP.800-171r3.html#${anchor}` :
                     `https://nvlpubs.nist.gov/nistpubs/SpecialPublications/800-171r3/NIST.SP.800-171r3.html`;
                 
+                const notApplicableClass = control.status === 'not-applicable' ? 'not-applicable' : '';
+                
                 return `
-                    <div class="control-item">
+                    <div class="control-item ${notApplicableClass}">
                         <div class="control-header">
                             <div class="control-title">
                                 <div class="control-id">${control.id}</div>
@@ -2121,6 +2185,7 @@
                                     <option value="not-started" ${control.status === 'not-started' ? 'selected' : ''}>Not Started</option>
                                     <option value="in-progress" ${control.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
                                     <option value="completed" ${control.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                    <option value="not-applicable" ${control.status === 'not-applicable' ? 'selected' : ''}>Not Applicable</option>
                                 </select>
                                 <button class="expand-btn" onclick="app.toggleControlDetails('${control.id}')">
                                     ${isExpanded ? '−' : '+'}
@@ -2218,6 +2283,7 @@
                 let totalControls = 0;
                 let completedControls = 0;
                 let inProgressControls = 0;
+                let notApplicableControls = 0;
                 let controlsWithNotes = 0;
 
                 Object.keys(this.controlsData).forEach(familyKey => {
@@ -2229,6 +2295,7 @@
                             totalControls++;
                             if (control.status === 'completed') completedControls++;
                             if (control.status === 'in-progress') inProgressControls++;
+                            if (control.status === 'not-applicable') notApplicableControls++;
                             if (control.notes && control.notes.trim()) controlsWithNotes++;
                             
                             return {
@@ -2242,15 +2309,20 @@
                     };
                 });
 
+                const applicableControls = totalControls - notApplicableControls;
+                const completionPercentage = applicableControls > 0 ? Math.round((completedControls / applicableControls) * 100) : 0;
+
                 const exportData = {
                     exportDate: new Date().toISOString(),
                     organizationName: "Organization Name", // Could be made configurable
                     summary: {
                         totalControls,
+                        applicableControls,
                         completedControls,
                         inProgressControls,
-                        notStartedControls: totalControls - completedControls - inProgressControls,
-                        completionPercentage: Math.round((completedControls / totalControls) * 100),
+                        notStartedControls: applicableControls - completedControls - inProgressControls,
+                        notApplicableControls,
+                        completionPercentage,
                         controlsWithNotes
                     },
                     families: progress
@@ -2294,9 +2366,11 @@
                 text += `SUMMARY\n`;
                 text += `========\n`;
                 text += `Total Controls: ${data.summary.totalControls}\n`;
+                text += `Applicable Controls: ${data.summary.applicableControls}\n`;
                 text += `Completed: ${data.summary.completedControls} (${data.summary.completionPercentage}%)\n`;
                 text += `In Progress: ${data.summary.inProgressControls}\n`;
                 text += `Not Started: ${data.summary.notStartedControls}\n`;
+                text += `Not Applicable: ${data.summary.notApplicableControls}\n`;
                 text += `Controls with Notes: ${data.summary.controlsWithNotes}\n\n`;
 
                 Object.keys(data.families).forEach(familyKey => {
